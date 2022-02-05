@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+  <div class="container py-5">
+    <div class="card-header">
+      <h3>Привет, я автор</h3>
+    </div>
+    <div class="card-body">
+      <p>
+        <b>
+          Привет! Я автор данного сайта на Django, ну не совсем автор, я его сделал следуя подробнейшей
+          инструкции.
+          Это мой первый проект, так что не суди строго.
+        </b>
+        <br>
+      </p>
+      <p>Это фото моего рабочего места, на котором я и сделал большую часть заданий.
+        <img src="{% static 'img/setup.jpg' %}" width="600" height="450" class="d-inline-block align-top"
+             alt="рабочее место">
+      </p>
+      <p>
+        А это ссылка на мой репозиторий на GitHub:
+        <a href="https://github.com/MorozovP?tab=repositories">MorozovP</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
