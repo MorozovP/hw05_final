@@ -2,8 +2,6 @@
 {% load thumbnail %}
 {% block title %} Последние обновления на сайте {% endblock title %}
 {% block content %}
-  {% load cache %}
-  {% cache 20 index_page page_obj.number %}
     <div class="container py-5">
       {% include 'posts/includes/switcher.html' %}
       {% for post in page_obj %}
@@ -32,5 +30,4 @@
       {% endfor %}
       {% include 'posts/includes/paginator.html' %}
     </div>
-  {% endcache %}
 {% endblock %}
