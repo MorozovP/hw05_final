@@ -212,10 +212,10 @@ class PostViewTest(TestCase):
         self.authorized_client.get(
             reverse('posts:profile_follow', args=[const.POST_AUTHOR])
         )
-        self.assertTrue(Follow.objects.filter(
-            user=self.user,
-            author=self.post_author).exists()
-                        )
+        self.assertTrue(
+            Follow.objects.filter(user=self.user,
+                                  author=self.post_author).exists()
+        )
 
     def test_authorised_user_subscribe(self):
         """Авторизованный пользователь может удалять пользователей из
@@ -226,10 +226,10 @@ class PostViewTest(TestCase):
         self.authorized_client.get(
             reverse('posts:profile_unfollow', args=[const.POST_AUTHOR])
         )
-        self.assertFalse(Follow.objects.filter(
-            user=self.user,
-            author=self.post_author).exists()
-                         )
+        self.assertFalse(
+            Follow.objects.filter(user=self.user,
+                                  author=self.post_author).exists()
+        )
 
     def test_new_post_appears_on_subscriber_page(self):
         """Новая запись пользователя появляется только в ленте подписчиков."""
