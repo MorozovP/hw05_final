@@ -10,7 +10,7 @@ from django.test import override_settings
 from django.urls import reverse
 
 from . import const
-from ..models import Group, Post, User
+from ..models import Follow, Group, Post, User
 
 POSTS_ON_PAGE_1 = 10
 POSTS_ON_PAGE_2 = 3
@@ -205,3 +205,48 @@ class PostViewTest(TestCase):
         cache.clear()
         cleared_cache = self.guest_client.get(reverse('posts:index')).content
         self.assertNotEqual(cached_content, cleared_cache)
+
+    def test_authorised_user_subscribe(self):
+        """Авторизованный пользователь может подписываться на других
+        пользователей."""
+        self.authorized_client.get(
+            reverse('posts:profile_follow', args=[const.POST_AUTHOR])
+        )
+        self.assertTrue(Follow.objects.filter(
+            user=self.user,
+            author=self.post_author).exists()
+                        )
+
+    def test_authorised_user_subscribe(self):
+        """Авторизованный пользователь может удалять пользователей из
+        подписок."""
+        self.authorized_client.get(
+            reverse('posts:profile_follow', args=[const.POST_AUTHOR])
+        )
+        self.authorized_client.get(
+            reverse('posts:profile_unfollow', args=[const.POST_AUTHOR])
+        )
+        self.assertFalse(Follow.objects.filter(
+            user=self.user,
+            author=self.post_author).exists()
+                         )
+
+    def test_new_post_appears_on_subscriber_page(self):
+        """Новая запись пользователя появляется только в ленте подписчиков."""
+        self.subscribed_user = User.objects.create_user(username='subscriber')
+        self.subscribed_client = Client()
+        self.subscribed_client.force_login(self.subscribed_user)
+        self.subscribed_client.get(
+            reverse('posts:profile_follow', args=[const.POST_AUTHOR])
+        )
+        post = Post.objects.create(
+            text='Тестируем систему подписок',
+            author=self.post_author,
+            group=self.test_group
+        )
+        response = self.subscribed_client.get(reverse('posts:follow_index'))
+        object_list = response.context.get('page_obj')
+        self.assertIn(post, object_list)
+        response = self.authorized_client.get(reverse('posts:follow_index'))
+        object_list = response.context.get('page_obj')
+        self.assertNotIn(post, object_list)
