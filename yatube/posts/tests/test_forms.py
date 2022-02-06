@@ -117,10 +117,11 @@ class PostFormTests(TestCase):
             reverse('posts:post_edit', kwargs={'post_id': POST_ID}),
             data=form_data,
         )
-        self.assertRedirects(response, '{}?next={}'.format(
-            reverse('users:login'),
-            reverse('posts:post_edit', kwargs={'post_id': POST_ID}))
-                             )
+        self.assertRedirects(
+            response, '{}?next={}'.format(reverse('users:login'),
+                                          reverse('posts:post_edit',
+                                                  kwargs={'post_id': POST_ID}))
+        )
         expected = 'Пост отредактирован гостем'
         self.assertNotEqual(Post.objects.get(id=POST_ID).text, expected)
 
@@ -147,6 +148,3 @@ class PostFormTests(TestCase):
         )
         expected = 'Комментарий, оставленный авторизованным пользователем.'
         self.assertEqual(Comment.objects.last().text, expected)
-
-
-

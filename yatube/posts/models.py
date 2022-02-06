@@ -41,6 +41,7 @@ class Post(models.Model):
     def __str__(self):
         return self.text[:15]
 
+
 class Group(models.Model):
     title = models.CharField(
         max_length=200,
@@ -53,6 +54,7 @@ class Group(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Comment(models.Model):
     post = models.ForeignKey(
@@ -74,6 +76,7 @@ class Comment(models.Model):
     created = models.DateTimeField(
         'Комметарий добавлен',
         auto_now_add=True)
+
 
 class Follow(models.Model):
     user = models.ForeignKey(
