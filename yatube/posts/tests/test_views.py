@@ -35,16 +35,9 @@ class PostViewTest(TestCase):
             description=const.GROUP_DESCRIPTION_2,
         )
         cls.post_author = User.objects.create_user(username=const.POST_AUTHOR)
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x01\x00'
-            b'\x01\x00\x00\x00\x00\x21\xf9\x04'
-            b'\x01\x0a\x00\x01\x00\x2c\x00\x00'
-            b'\x00\x00\x01\x00\x01\x00\x00\x02'
-            b'\x02\x4c\x01\x00\x3b'
-        )
         uploaded = SimpleUploadedFile(
             name='small.gif',
-            content=small_gif,
+            content=const.SMALL_GIF,
             content_type='image/gif'
         )
         posts_list = []
@@ -94,8 +87,10 @@ class PostViewTest(TestCase):
                 self.assertTemplateUsed(response, template)
 
     def test_context_passed_to_template(self):
-        """Проверяем корректность контекста, передаваемого в шаблоны
-        index.html, post_list.html, profile.html."""
+        """
+        Проверяем корректность контекста, передаваемого в шаблоны
+        index.html, post_list.html, profile.html.
+        """
         for name, args in self.urls:
             page = self.guest_client.get(reverse(name, args=args))
             self.assertEqual(page.context['page_obj'][0], self.post)
@@ -111,8 +106,10 @@ class PostViewTest(TestCase):
                     self.assertEqual(field, value)
 
     def test_paginator(self):
-        """Проверяем пагинатор в шаблонах index.html, post_list.html,
-        profile.html."""
+        """
+        Проверяем пагинатор в шаблонах index.html, post_list.html,
+        profile.html.
+        """
         for name, args in self.urls:
             page_1 = self.guest_client.get(reverse(name, args=args))
             page_2 = self.guest_client.get(
@@ -127,8 +124,10 @@ class PostViewTest(TestCase):
         )
 
     def test_context_passed_to_post_detail_template(self):
-        """Проверяем корректность контекста, передаваемого в шаблон
-        post_detail.html."""
+        """
+        Проверяем корректность контекста, передаваемого в шаблон
+        post_detail.html.
+        """
         post = Post.objects.get(id=LAST_POST_ID)
         response = self.guest_client.get(
             reverse('posts:post_detail', kwargs={'post_id': LAST_POST_ID})
@@ -137,8 +136,9 @@ class PostViewTest(TestCase):
         self.assertEqual(response.context['post'].image, post.image)
 
     def test_form_passed_to_post_create_template(self):
-        """Проверяем корректность форм при создании и редактировании
-        поста."""
+        """
+        Проверяем корректность форм при создании и редактировании поста.
+        """
         name_list = [
             reverse('posts:post_create'),
             reverse('posts:post_edit', kwargs={'post_id': 1}),
@@ -168,8 +168,9 @@ class PostViewTest(TestCase):
             self.assertIn(post, object_list)
 
     def test_post_does_not_appear_on_wrong_page(self):
-        """Пост не отображается на странице группы, к которой не
-        отностится."""
+        """
+        Пост не отображается на странице группы, к которой не отностится.
+        """
         response = self.guest_client.get(
             reverse('posts:group_posts', kwargs={'slug': 'test_slug_2'}))
         post = Post.objects.get(id=LAST_POST_ID)
@@ -218,8 +219,9 @@ class PostViewTest(TestCase):
         )
 
     def test_authorised_user_subscribe(self):
-        """Авторизованный пользователь может удалять пользователей из
-        подписок."""
+        """
+        Авторизованный пользователь может удалять пользователей из подписок.
+        """
         self.authorized_client.get(
             reverse('posts:profile_follow', args=[const.POST_AUTHOR])
         )

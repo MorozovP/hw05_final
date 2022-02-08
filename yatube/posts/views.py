@@ -16,7 +16,7 @@ def paginator(request, post_list):
 
 
 def index(request):
-    post_list = Post.objects.select_related('group').all()
+    post_list = Post.objects.select_related('group', 'author').all()
     page_obj = paginator(request, post_list)
     context = {
         'page_obj': page_obj,
@@ -37,7 +37,7 @@ def group_posts(request, slug):
 
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    post_list = Post.objects.filter(author_id=author.id)
+    post_list = author.posts.all()
     following = False
     if request.user.is_authenticated:
         if Follow.objects.filter(user=request.user, author=author).exists():
@@ -114,11 +114,7 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    followed_authors = Follow.objects.filter(user=request.user)
-    author_list = []
-    for author in followed_authors:
-        author_list.append(author.author.id)
-    post_list = Post.objects.filter(author_id__in=author_list)
+    post_list = Post.objects.filter(author__following__user=request.user)
     page_obj = paginator(request, post_list)
     context = {
         'page_obj': page_obj,
@@ -129,11 +125,10 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    if not Follow.objects.filter(user=request.user, author=author).exists():
-        if request.user == author:
-            messages.error(request, 'Нельзя подписаться на самого себя')
-            return redirect('posts:profile', author)
-        Follow.objects.create(user=request.user, author=author)
+    if request.user == author:
+        messages.error(request, 'Нельзя подписаться на самого себя')
+        return redirect('posts:profile', author)
+    Follow.objects.get_or_create(user=request.user, author=author)
     return redirect('posts:profile', author)
 
 

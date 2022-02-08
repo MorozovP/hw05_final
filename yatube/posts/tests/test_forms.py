@@ -51,16 +51,9 @@ class PostFormTests(TestCase):
     def test_post_creation(self):
         """Валидная форма создает запись в базе данных."""
         posts_count = Post.objects.count()
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x01\x00'
-            b'\x01\x00\x00\x00\x00\x21\xf9\x04'
-            b'\x01\x0a\x00\x01\x00\x2c\x00\x00'
-            b'\x00\x00\x01\x00\x01\x00\x00\x02'
-            b'\x02\x4c\x01\x00\x3b'
-        )
         uploaded = SimpleUploadedFile(
             name='small.gif',
-            content=small_gif,
+            content=const.SMALL_GIF,
             content_type='image/gif'
         )
         form_data = {
@@ -89,8 +82,9 @@ class PostFormTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count + 1)
 
     def test_post_edit(self):
-        """Отправка валидной формы редактирования изменяет запись в
-        базе данных."""
+        """
+        Отправка валидной формы редактирования изменяет запись в базе данных.
+        """
         posts_count = Post.objects.count()
         form_data = {
             'text': 'Отредактированный текст поста',
@@ -108,8 +102,10 @@ class PostFormTests(TestCase):
         self.assertEqual(Post.objects.count(), posts_count)
 
     def test_guest_user_post_edit(self):
-        """Отправка формы редактирования неавторизованным пользователем
-        не меняет данные в базе."""
+        """
+        Отправка формы редактирования неавторизованным пользователем
+        не меняет данные в базе.
+        """
         form_data = {
             'text': 'Пост отредактирован гостем',
         }
@@ -147,4 +143,4 @@ class PostFormTests(TestCase):
             data=form_data,
         )
         expected = 'Комментарий, оставленный авторизованным пользователем.'
-        self.assertEqual(Comment.objects.last().text, expected)
+        self.assertEqual(Comment.objects.first().text, expected)

@@ -62,8 +62,10 @@ class PostURLTests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_private_urls_redirect_guest_user(self):
-        """Проверяем редирект неавторизованного пользователя при попытке
-        перейти на страницы создания и редактирования постов."""
+        """
+        Проверяем редирект неавторизованного пользователя при попытке
+        перейти на страницы создания и редактирования постов.
+        """
         for url, expected in self.urls_redirect.items():
             response = self.guest_client.get(url)
             with self.subTest(value=response):
@@ -71,8 +73,9 @@ class PostURLTests(TestCase):
                 self.assertRedirects(response, expected)
 
     def test_private_urls_available_for_author(self):
-        """Проверяем доступность приватных страниц авторизованному
-        пользователю."""
+        """
+        Проверяем доступность приватных страниц авторизованному пользователю.
+        """
         for url in self.urls_available_for_author.keys():
             response = self.post_author_client.get(url)
             with self.subTest(value=response):
