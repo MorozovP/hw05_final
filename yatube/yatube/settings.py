@@ -17,6 +17,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    '13.53.201.41',
 ]
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
