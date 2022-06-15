@@ -208,8 +208,10 @@ class PostViewTest(TestCase):
         self.assertNotEqual(cached_content, cleared_cache)
 
     def test_authorised_user_subscribe(self):
-        """Авторизованный пользователь может подписываться на других
-        пользователей."""
+        """
+        Авторизованный пользователь может подписываться на других
+        пользователей.
+        """
         self.authorized_client.get(
             reverse('posts:profile_follow', args=[const.POST_AUTHOR])
         )

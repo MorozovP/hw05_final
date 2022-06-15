@@ -17,6 +17,9 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
+    'www.mrzv.pythonanywhere.com',
+    'mrzv.pythonanywhere.com',
+    '16.170.168.131',
 ]
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'about.apps.AboutConfig',
     'sorl.thumbnail',
+    'debug_toolbar',
 ]
 
 LOGIN_URL = 'users:login'
@@ -51,7 +55,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
 
 ROOT_URLCONF = 'yatube.urls'
 
@@ -96,6 +107,8 @@ DATABASES = {
     }
 }
 
+
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -132,6 +145,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = '/var/www/yatube/assets/'
+
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

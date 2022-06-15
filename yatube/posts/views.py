@@ -16,17 +16,18 @@ def paginator(request, post_list):
 
 
 def index(request):
-    post_list = Post.objects.select_related('group', 'author').all()
+    post_list = Post.objects.select_related('group', 'author')
     page_obj = paginator(request, post_list)
     context = {
         'page_obj': page_obj,
+        'index': True,
     }
     return render(request, 'posts/index.html', context)
 
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    post_list = group.groups.all()
+    post_list = group.posts.select_related('author')
     page_obj = paginator(request, post_list)
     context = {
         'group': group,
@@ -65,7 +66,10 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
-    form = PostForm(request.POST or None)
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,
+    )
     context = {
         'form': form,
         'is_edit': False,
@@ -114,10 +118,12 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    post_list = Post.objects.filter(author__following__user=request.user)
+    post_list = Post.objects.filter(
+        author__following__user=request.user).select_related('author')
     page_obj = paginator(request, post_list)
     context = {
         'page_obj': page_obj,
+        'follow': True,
     }
     return render(request, 'posts/follow.html', context)
 
